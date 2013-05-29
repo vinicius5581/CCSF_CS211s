@@ -1,0 +1,12 @@
+//	private static ColorAmountDisplay instance;
+
+	/*
+	public static ColorAmountDisplay getInstance(Graphics g)
+	{
+		if ( instance == null )
+			instance = new ColorAmountDisplay(g);
+		return instance;
+	}
+	*/
+	
+	

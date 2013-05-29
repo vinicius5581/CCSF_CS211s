@@ -1,0 +1,7 @@
+GENERAL GUI NOTES:
+
+MAKE MAIN PROGRAM w/ THREAD
+-make class that extend Frame
+--setup Frame w/ constructor
+--create a method that will setup OTHER containers 
+--add method to constructor of the frame 

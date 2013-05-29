@@ -1,0 +1,38 @@
+      FileOutputStream fos = new FileOutputStream(originalFileName);
+      FileInputStream fis = new FileInputStream(zipedFile);
+      ZipInputStream zin = new ZipInputStream(fis);
+      
+      ZipEntry entry;
+      while( (entry = zin.getNextEntry()) != null )
+      {
+         int size;
+         byte buffer[] = new byte[1024];
+         while( (size = zin.read(buffer, 0, buffer.length)) > 0 )
+         {
+            fos.write(buffer, 0, size);
+         }
+         
+         fos.close();
+
+      }
+      
+      zin.close();
+      fis.close();
+      
+      /*
+      
+      FileInputStream fis = new FileInputStream(zipedFile);
+      ZipInputStream zin = new ZipInputStream(fis);
+      
+      ZipEntry ze = zin.getNextEntry();
+      
+      byte[] buffer = new byte[1024];
+     
+      int size; 
+      //read data of zipfile into buffer to unzip it
+      
+      
+      fos.close();
+      zin.close();
+      fis.close();
+      

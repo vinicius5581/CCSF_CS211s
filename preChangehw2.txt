@@ -1,0 +1,290 @@
+/** 
+ * Professor: Abbas Moghtanei
+ * Class: CS211S, Advanced Java: Standard Edition 
+ * @author Victor Malchikov
+ * Homework #2
+ */
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+
+public class IPAddress
+{
+   private String[] ipArray;	
+	
+   /** This method takes in an integer and generates that many non-unique 
+    *   IP addresses and stores them as strings in an array.
+    *   @param number is the number of non-unique IP Addresses user wants.
+    *   @return an array of Strings where each element is an IP address. 
+    */
+   public String[] gen(int number)
+   {
+	   //ipArray will store IP addresses  
+	   ipArray = new String[number];
+
+		//ipGenerator() method used to generate IP addresses 
+	   //pass in false to generate non-unique IP and number for desired amount
+		for(int i = 0; i < ipArray.length; i++)
+		{
+		   ipArray[i] = ipGenerator(false, number);
+		}
+	 
+	   
+	   return ipArray;
+   }
+   
+   /**Method generates a specified amount of unique IP addresses and returns a 
+    *        them in a String array. 
+    * @param number is the desired amount of unique IP addresses
+    * @return a String array of unique IP addresses. 
+    */
+   public String[] ugen(int number)
+   {
+      //ipArray will store IP addresses  
+      ipArray = new String[number];
+   
+      //ipGenerator() method used to generate IP addresses 
+      //pass in true to generate unique IP and number for desired amount
+      ipGenerator(true, number);
+
+      return ipArray;
+   }
+   
+   /**Method designed to sort an array of IP addresses in ascending order (small to large)
+    * @param ipArray is an array of IP Addresses that are stored as Strings
+    * @return a String array of sorted IP Addresses 
+    */
+   public String[] sort(String[] array)
+   {     
+    
+      //check if IP needs to be padded with 0's prior to sort
+      for(int i = 0; i < array.length; i++)
+      {
+         //IP length of 15 only needs to have "." removed
+         if(array[i].length() == 15)
+            array[i] = array[i].replaceAll("\\.", "");
+         else
+         {
+            //Pad IP with 0's so it can be sorted properly 
+            array[i] = pad(array[i]);
+         }
+      }
+      
+      //sort IP Addresses 
+      Arrays.sort(array);
+      
+      //UN-pad the sorted array
+      for(int i = 0; i < array.length; i++)
+      {
+         array[i] = unPad(array[i]);
+      }
+      
+      //return sorted array
+      return array;  
+   }
+   
+   /**Method that accepts an array of non-unique IP Addresses and removes duplicates
+    * @param array is the array of non-unique IP Addresses
+    * @return a String array containing unique IP Addresses 
+    */
+   public String[] uniq(String[] array)
+   {
+      ArrayList<String> ipArray = new ArrayList(Arrays.asList(array));
+
+      for(int i = 1; i < ipArray.size(); i++)
+      {
+         int next = 1;
+         while(ipArray.get(i).compareTo(ipArray.get(i+next)) == 0)
+         {
+           
+         }
+            
+      }
+      return null;
+   }
+
+   /** Method used internally by the class to generate IP Addresses
+    * @param unique is a boolean that dictates if unique IP Addresses
+    *        will be generated. If true then unique IP Addresses will 
+    *        be generated.
+    * @param number is the number of IP Addresses are to be generated. 
+    */
+   private void ipGenerator(boolean unique, int number)
+   {
+	   //index is used as a counter to ensure we obtain all IP Addresses
+      int index = 0;
+	   
+      //ipFull is going to contain full IP Address
+	   String ipFull= "";
+	   
+	   //Use loop to put together a number IP Address specified by param number 
+	   while(index < number)
+	   {
+	      //following 4 strings create an IP Address 
+		   String ip1 = "" + (int)(Math.random() * 256);
+		   String ip2 = "" + (int)(Math.random() * 256);
+		   String ip3 = "" + (int)(Math.random() * 256);
+		   String ip4 = "" + (int)(Math.random() * 256);
+		   
+		   String ip = get
+		   //IP Address is properly put together 
+		   ipFull = ip1 + "." + ip2 + "." + ip3 + "." + ip4;
+		   
+		   //check if we are generating unique IP Addresses 
+	      if(!unique)
+	      {
+	         //this generates non-unique IP    	  
+	         ipArray[index] = ipFull;
+	    	   index++;
+	      }
+	      else
+	      {
+	         //this generates unique IP
+	         if(index == 0) 
+	    	   {
+	            ipArray[index] = ipFull;
+	            index++;
+	    	   }
+	    	   else 
+	    	   {
+	    	      //use loop to check if IP Address had already been created
+	    	      //if it has then break out of loop and obtain new IP Address
+	    	      for(int i = 0; i < index; i++)
+	    		   {
+	    		      if (ipArray[i].equals(ipFull))
+                     break;
+	    		      else if(i == index -1 && !ipArray[i].equals(ipFull))
+	    			   {
+	    			 	   ipArray[index] = ipFull;
+	    			 	   index++;//index only incremented if we added a unique IP
+	    			 	   break;
+	    			   } 
+	    			   else
+	    				   continue;  
+	    		   } //end for-loop
+	    	   } //end of else (that contains for-loop)
+	      } //end of else (that generates unique IP)   
+	   }//end of while-loop
+   }//end of method
+   
+   /**Method removes zeroes from padded IP Address and returns unpadded IP
+    * @param ip is a String that needs to be modified 
+    * @return String that has been modified
+    */
+   private String unPad(String ip)
+   {
+      //break IP into 4 parts
+      String one = ip.substring(0, 3);
+      String two = ip.substring(3, 6);
+      String three = ip.substring(6, 9);
+      String four = ip.substring(9, ip.length());
+      
+      //remove padded zeroes from each part 
+      //remove padded zeroes from part one
+      for(int i = 0; i < one.length(); i++)
+      {
+         if(one.startsWith("0"))
+            one = one.substring(1, one.length());
+         else
+            break;
+      }
+      //remove padded zeroes from part two
+      for(int i = 0; i < two.length(); i++)
+      {
+         if(two.startsWith("0"))
+            two = two.substring(1, two.length());
+         else 
+            break;
+      }
+      //remove padded zeroes from part three
+      for(int i = 0; i < three.length(); i++)
+      {
+         if(three.startsWith("0"))
+            three = three.substring(1, three.length());
+         else
+            break;
+      }
+      //remove padded zeroes from part four
+      for(int i = 0; i < four.length(); i++)
+      {
+         if(four.startsWith("0"))
+            four = four.substring(1, four.length());
+         else
+            break;       
+      }
+      
+      //put the IP address back together and return it
+      String address = one + "." + two + "." + three + "." + four;
+      
+      return address;  
+   }
+   
+   /**Method pads an IP Address with 0's and removes "." 
+    * @param ip is the String representation of IP Address
+    * @return padded IP in String form
+    */
+   private String pad(String ip)
+   {
+      //find where "." is in the string
+      int firstDot = ip.indexOf(".");
+      int secondDot = ip.indexOf(".", firstDot+1);
+      int thirdDot = ip.indexOf(".", secondDot+1);
+      
+      //break IP into 4 parts based on "." position 
+      String one = ip.substring(0, firstDot);
+      String two = ip.substring(firstDot+1, secondDot);
+      String three = ip.substring(secondDot +1, thirdDot);
+      String four = ip.substring(thirdDot+1, ip.length());
+      
+      //obtain length of each IP part
+      int oneLength = one.length();
+      int twoLength = two.length();
+      int threeLength = three.length();
+      int fourLength = four.length();
+      
+      //Pad each IP part based on length 
+      switch (oneLength)
+      {
+         case 1: one = "00" + one;
+         break;
+         case 2: one = "0" + one;
+         break;
+      }
+
+      switch (twoLength)
+      {
+         case 1: two = "00" + two;
+         break;
+         case 2: two = "0" + two;
+         break;
+      }
+      
+      switch (threeLength)
+      {
+         case 1: three = "00" + three;
+         break;
+         case 2: three = "0" + three;
+         break;
+      }
+      
+      switch (fourLength)
+      {
+         case 1: four = "00" + four;
+         break;
+         case 2: four = "0" + four;
+         break;
+      }
+     
+      //put IP back together 
+      String paddedIP = one + two + three + four;
+      //ensure that IP is proper length of 12
+      assert paddedIP.length() == ip.length()-3: "bad"; 
+      //return IP
+      return paddedIP;
+   }
+   
+   
+
+
+}

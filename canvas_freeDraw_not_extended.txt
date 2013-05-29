@@ -1,0 +1,158 @@
+package hw;
+
+import java.awt.BasicStroke;
+import java.awt.Canvas;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.io.Serializable;
+import java.util.ArrayList;
+
+public class CanvasSpace extends Canvas implements Serializable
+{
+	private ArrayList<PointAndColor> arrayPC;
+	private PointAndColor pc;
+	private Graphics2D g2;
+	
+	private Color penColor = Color.black;
+	private boolean penOn = false;
+	
+	public void paint(Graphics g)
+	{
+		//create object of DrawListener class that will notify us of events
+		DrawListener dl = new DrawListener();
+		arrayPC = new ArrayList<PointAndColor>();
+		
+		addMouseListener(dl);
+		addMouseMotionListener(dl);
+		repaint();
+	}
+	
+	public void repaint()
+	{
+		g2 = getGraphics2D();
+		
+		//draw anything that user drew via free-draw 
+		for(int i = 0; i < arrayPC.size(); i++)
+		{
+			for(int j = 1; j < arrayPC.get(i).getPoints().size(); j++ )
+			{
+				g2.setColor(arrayPC.get(i).getColors().get(j));
+				int x1 = arrayPC.get(i).getPoints().get(j-1).x;
+				int y1 = arrayPC.get(i).getPoints().get(j-1).y;
+				int x2 = arrayPC.get(i).getPoints().get(j).x;
+				int y2 = arrayPC.get(i).getPoints().get(j).y;
+				g2.drawLine(x1, y1, x2, y2);
+				
+			}
+			
+		}
+
+	}
+	
+	//set size of the drawing pen
+	private Graphics2D getGraphics2D() 
+	{
+		Graphics g = getGraphics();
+		g2 = (Graphics2D)g;
+		g2.setStroke(new BasicStroke(3));
+		return g2;
+	}
+
+	
+	//clear method
+	public void clear()
+	{
+		//remove all saved data points from arrayPC
+		arrayPC = new ArrayList<PointAndColor>();
+	
+		//paint over entire canvas white rectangle (size of the canvas)
+		Graphics g = getGraphics();
+		g.setColor(Color.white);
+		int width = getWidth();
+		int height = getHeight();
+		g.fillRect(0, 0, width, height); 
+		
+		repaint();
+		
+	}
+	
+	//get pen color
+	public Color getPenColor()
+	{
+		return penColor;
+	}
+
+	
+	private class DrawListener implements MouseListener, MouseMotionListener
+	{
+		
+		
+		@Override
+		public void mouseClicked(MouseEvent e)
+		{
+
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent arg0)
+		{
+			penOn = false;
+		}
+	
+		@Override
+		public void mouseExited(MouseEvent arg0)
+		{
+			penOn = false;
+		}
+	
+		@Override
+		public void mousePressed(MouseEvent e)
+		{
+			//turn pen ON if mouse button is pressed and held
+			if(!penOn)
+			{
+				penOn = true;
+				pc = new PointAndColor();
+				pc.addPointAndColor(e.getPoint(), getPenColor());
+				pc.addPointAndColor(e.getPoint(), getPenColor());
+				arrayPC.add(pc);
+				repaint();
+			}
+
+		}
+	
+		@Override
+		public void mouseReleased(MouseEvent arg0) 
+		{
+			//turn pen OFF when mouse button is released
+			penOn = false;
+		}
+
+		@Override
+		public void mouseDragged(MouseEvent e)
+		{
+			//if pen is ON then allow drawing
+			if(penOn)
+			{
+				//store point + color based on mouse position 
+				pc = arrayPC.get(arrayPC.size()-1);
+				pc.addPointAndColor(e.getPoint(), getPenColor());
+				arrayPC.add(pc);
+				//call repaint to paint the stored points and colors 
+				repaint();
+			}
+		}
+
+		@Override
+		public void mouseMoved(MouseEvent e) 
+		{	
+
+		 
+		}
+	}
+
+}

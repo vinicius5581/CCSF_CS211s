@@ -1,0 +1,34 @@
+System.out.println(oldFilePath+ " is name of zipFile");
+      
+      //obtain original name of file
+      //String originalFile = getFileName(zipFile);
+      //System.out.println(zipFile + " is original file name.");
+      
+      //zipedFile is absolute path to zip file that contains compressed file 
+      String zipedFile = getPathToZippedFile(oldFilePath);
+      System.out.println(" abs zipped file path " + zipedFile);
+      
+      //get destination directory 
+      //String destination  = getDestinationDirPath(oldFilePath);
+      //System.out.println("destination dir "+ destinationDir);
+      
+      byte[] buffer = new byte[1024];
+      FileInputStream fis = new FileInputStream(zipedFile);
+      ZipInputStream zis = new ZipInputStream(fis);
+      ZipEntry ze = zis.getNextEntry();
+      
+    
+      while(ze != null)
+      {
+         int size;
+         FileOutputStream fos = new FileOutputStream(oldFilePath);
+         
+         while( (size = zis.read(buffer, 0, 1024)) > -1)
+            fos.write(buffer, 0, size);
+         
+         fos.close();
+         zis.closeEntry();
+         ze = zis.getNextEntry();
+      }
+      
+      zis.close();

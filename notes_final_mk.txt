@@ -1,0 +1,519 @@
+MULTITHREADING
+-------------------------------------------------------------------
+
+-        Under C, used to call fork() which would create a new process.  A process is very heavy and a lot of them will slow down the machine considerably.  So you would have to use several computers in parallel. 
+
+-        Instead today we create multiple Threads instead of process. 
+
+-        Threads are PART OF a process.  Each thread inside of a process is handling a separate task.  But from the point of view of the system you are only creating one process even if it has lots of threads.
+
+-        Threads/Multithreading cannot be handled by all languages especially older languages.
+
+-        With JVM, it will create a fork in order to run your process.  Inside of this process your threads will only look like one process to the OS.
+
+-        With multithreading you are essentially cheating the JVM.
+
+-        When you used to have 1 processor it wasn't really multithreading because all the processes of the computer were sharing one processor.  The operating system would have to jump back and forth between each thread.  This was called time sharing.
+
+
+Runnable Interface
+-        Whenever you want to have multiple threads you have to implement Runnable and it's only method, run()
+
+Thread Class
+-        One of the most often used methods of the thread class is sleep(...).
+-        sleep is a bit more complicated in java because it throws Interrupted Exception.
+
+-        Sleep is one of the static methods of the thread class
+        sleep(long ms)
+        sleep(long ms, int ns)
+
+Abbas's Sleep:  
+        sleep()   
+        -        100ms delay
+        sleep(long ms) 
+        sleep(long ms, int ns)
+
+public static void sleep(long ... time)
+{
+try
+{
+switch(time.length)
+{
+case 0:  Thread.sleep(100); break;
+case 1:  Thread.sleep(time[0]); break;
+default:  Thread.sleep(time[0], (int)time[1]);
+}
+} catch (InterruptedException e) {}
+}
+
+
+First we create task, and then client.
+
+
+EXAMPLE
+
+public class TaskClass implements Runnable
+{
+blah blah blah
+
+public TaskClass(......)
+{
+blah blah blah
+}
+
+public void run()
+{
+blah blah blah
+}
+}
+
+This is just implementing runnable and coding what will be run.  It's not actually creating a thread.  That is done in a class that uses an object of TaskClass
+
+
+public class Client
+{
+public void aMethod()
+{
+TaskClass task = new TaskClass(.....);
+
+Thread t = new Thread(task);
+        //thread class several constuctors.  The argument used here is "object of the class that implements Runnable"
+        //this is used very often
+
+t.start();
+}
+}
+
+To use as anonymous inner class:
+
+Thread t = new Thread(new Runnable()
+{
+public void run()
+{ ......}
+});
+
+
+public static DemoThread
+{
+public static void main(String[] args)
+{
+Runnable PrintA = new PrintChar('a',100)
+        //PrintChar class will display the letter as many times as you want
+        //You could also write the left side of that as TaskClass PrintA =
+        //because you can either put the name of the class or whatever it implements
+
+Runnable PrintB = new PrintChar('b',100);
+
+Runnable Print100 = new PrintNum(100);
+        //printnum displays 100 numbers for you
+
+Thread t1 = new Thread(PrintA);
+Thread t2 = new Thread(PrintB);
+Thread t3 = new Thread(Print100);
+
+t1.start(); t2.start(); t3.start();
+}
+}
+
+public class PrintChar implements Runnable
+{
+private char c;
+private int times;
+
+public PrintChar(Char ch, int t)
+{
+c=ch;
+times=t;
+}
+
+public void run()
+{
+for(int i=0; i <times; i++)
+print(c);
+}
+}
+
+public class PrintNum implements Runnable
+{
+private int num;
+
+public PrintNum(int n)
+{
+num =n;
+}
+
+public void run()
+{
+for(int i=0; i<=num) 
+        print(" " + i);
+}
+}
+
+
+-        The thread class itself implements Runnable.    Because of that you could also create a class that implements Thread.  In other words: public class DemoThread extends Thread.    However, we don't do this because we only get one extends and we don't want to waste it.
+
+
+
+SILENT RADIO EXAMPLE
+
+import java.applet.*;
+import java.awt.*;
+
+public class SilentRadio extends Applet implements Runnable
+{
+String msg = "A Simple Moving Banner";
+
+Thread t= null;  //global because it needs to be used in different methods
+
+int state;
+
+boolean stopFlag;
+
+public void init()
+{
+setBackground(Color.cyan);
+setForeground(Color.red);
+}
+
+public void start()
+{
+t = new Thread(this);  //this refers to the object of the class that implements runnable: SilentRadio
+stopFlag=false;
+t.start();
+}
+
+public void run()
+{
+char c;
+for(;;)
+{
+repaint();
+sleep(500);   //sleep method from earlier
+c = msg.charAt(0);  //get first character
+msg = msg.substring(1,msg.length()) //remove first character
+msg += c;  //append the character to the end of teh string
+
+if(stopFlag) break;
+}
+}
+
+public void stop()
+{
+stopFlag = true;
+t = null;     //this is the way that we are stopping the threa
+}
+
+public void paint(Graphics g)
+{
+g.drawString(msg, 50, 30);
+}
+}
+
+
+FLASHING TEXT PROGRAM EXAMPLE
+
+public class FlashingText extends JApplet implements Runnable
+{
+private JLabel jl = new JLabel("Hello", JLabel.CENTER);  
+        //"Hello" is the message that will flash
+
+public FlashingText()
+{
+add(jl);
+
+new Thread(this).start();
+//anonymous object 
+}
+
+public void run()
+{
+if(jl.getText()==null)  
+jl.setText("Hello");
+else 
+jl.setText(null);
+sleep(200);
+}
+}
+
+
+SEMAPHORE
+
+-        Used to lock a process so that only one thread can access it at a time
+
+Java:
+
+modifyFile(Thread t)
+{
+blah blah blah
+}
+
+-        This method could be called by many clients so needs to be SYNCHRONIZED
+
+public Synchronized void modifyFile(Thread t)
+
+-        by adding Synchronized the method will be thread safe.  
+
+
+
+Thread safe vs Thread Unsafe
+
+All methods in Java are either safe or unsafe.  
+
+If you use unsafe methods in multithreading environments then it could corrupt your file.
+
+Example:
+
+StringBuilder vs StringBuffer
+        -        these two have identical constants and methods
+        -        StringBuilder is thread unsafe, StringBuffer is thread safe
+
+The reason there are different versions is because of efficiency.  With thread safe versions you get the safety but it takes more processing time
+
+
+Thread Priority
+
+Example:   You have two threads.  One that loads into the array and one that sorts the array.  You need to make sure that the data gets loaded into the array first.
+
+t1.setPriority(5 through 10)
+
+-        higher number is more priority
+-        default thread priority is 5
+
+int p = t2.getPriority();
+-        returns the priority as an int
+
+
+Join Method
+
+t1.join()
+        -        it means that the system is going to wait until t1 has finished and then do whatever comes after it
+
+Also:
+
+isAlive()
+
+if(! t1.isAlive()) start_sorting();
+
+yield()
+
+-        whenver you use yield you want to let another thread continue the job
+
+for (int i=0;i<n;i++)
+{
+print(some character);
+t1.yield();
+        //in each iteration it says "you go first" to the next method
+}
+
+-------------------------------------------------------------------
+4 Types of Buttons in Swing
+
+JButton
+JToggleButton
+JCheckBox
+JRadioButton
+
+JToggle-Button is like On or Off switch in one button instead of two separate radio buttons for On and Off
+
+JToggleButton
+
+public class Demo JToggleButton extends JApplet implements ItemListener
+{
+JLabel jl;
+JToggleButton jt;
+
+private void mkGUI()
+{
+setLayout(new FlowLayout())
+jl = new JLabel("Button is off");
+jt = new JToggleButton("On/Off");
+
+jt.addItemListener(this);
+
+add(jt);  add(jl);
+}
+
+public void itemStateChanged(ItemEvent ie)
+{
+if (ie.isSelected())
+jl.setText("Button is on");
+else
+jl.setText("Button is off");
+}
+}
+
+--------------------------------------------------------------------------
+Transient
+
+class Doit
+{
+        transient int a;
+        int b;
+        blah blah blah;
+}
+
+-        when serializing, transient variables will not be saved/serialzed
+-        in example above:   "a" will not be saved, but "b" will
+-        both static and transient are not saved.  but transient will be run everywhere while static is only run in static environments
+
+Native
+
+public native void mysort();
+
+-        when declaring method as native, means that you do not have any implementation for your method in your java
+-        this means that mysort(); is a method that is written in another language (not java)
+        -        another language is often in C or C++ for efficiency
+-        Java Native Interface used to do this, may be covered if we have enough time in the class
+
+Synchronized
+
+-        normally used for methods
+-        useful for multithreading environment
+-         we want to make sure that while one thread is using a source the other threads should wait
+        -        this can be done by putting synchronized before your method
+
+synchronized void write(int [])
+{ write to file }
+
+-        if all files could write to the file at the same time it would be corrupt.  
+-        synchonized makes the methods wait their turn
+-        uses semaphore to lock and unlock the source
+
+Volatile
+
+-        volatile int x;
+-        you are telling the compiler that the value of x is constantly changing
+        -        so the compiler will use different resources
+-         sometimes if it isn't volatile the compiler can't keep up with the speed of changing of the variable and it won't change even though it was supposed to
+
+-----------------------
+More on Reflection
+
+Constructor class
+
+-        Constructor class does NOT have a constructor
+-        we get the object of a constructor through various methods
+
+Constructor con[] = Class.getConstructors();
+        -        gives you an array of all the public constructors
+        -        like getMethods()m, returns only public
+
+Constructor con[] = Class.getDeclaredConstructors();
+        -        gives you an array of ALL the constructors, not just the public ones
+        -        like getDeclaredMethods(), gets all
+
+Singular method return
+Method m = Class.getMethod("sortit")   
+        -        sort-it is the name of the method you want to return
+        -        give the name of the method as a string   
+     
+int getModifiers();
+        -        same as before
+
+String getName();
+        -        same as before
+
+Class[] getParameterTypes();
+        -        returns an array of classes will all your parameter types
+
+Constructor Example
+
+import java.lang.reflect.*;
+import java.util.*;
+
+class Demo
+{
+        public static void main(String[] args)
+        {
+                        //want to get all the constructors of the string class
+                Constructor cons[] = String.class.getConstructors();
+                        //if you append ".class" to a class makes it an object
+                     
+                for(Constructor c : cons)
+                { 
+                        Class exp[] = c.getExceptionTypes();  
+                                //all exception types are in java.util.*
+                        for (Class x : exp ) println(x);
+                }
+        }
+}                
+
+-        This displays all the exceptions of the String class
+
+-        Say we are given the following:
+
+        DoIt   <------this is a class
+        DoIt d = new DoIt();
+
+        -        just inserting "d" where "String.class." is will not work because d is an object, not a class
+        -        If you are given d, you would have to get the class and then get the constructor
+                 d.getClass().getConstructor();
+				 
+------------------------------------------------------------------------
+
+Advantage of this was flexibility.  With the interface you can add more shapes over and over again without having to create a separate class for each shape made with the constructor
+
+Anonymous Class
+
+public class BankAcct
+{
+blah blah
+
+private class Money
+{
+blah blah
+}
+blah blah
+}
+
+public class BankAcct
+{
+blah
+
+private static class Money
+{
+blah blah
+}
+blah blah
+}
+
+Difference between the two:
+-        in the second one you don't need to create an object of Money.  You can just use Money.Whatever
+-        in the first one you have to create and object of Money in order to use methods in the class
+
+
+public class BankAcct
+{
+blahblah
+public class Money
+{
+blah blah
+}
+blah blah
+}
+
+To access Money from outside:
+
+BankAcct ba = new BankAcct();
+
+BankAcct.Money amount = new Money();
+
+public class BankAcct
+{
+blahblah
+public static class Money
+{
+blah blah
+}
+blah blah
+}
+
+//this is the way you call the inner static class
+BankAcct.Money m = new BankAcct.Money();
+
+Modal
+
+ColorChooser dialog box is "modal"  what does this mean?
+
+-        Modal means that you need to finish with the dialog box on your screen you can't access the other stuff on the screen
+-        Non-modal means that when it is active you can go back and forth to other windows

@@ -1,0 +1,87 @@
+/**Method generates a specified amount of unique IP addresses and returns a 
+    *        them in a String array. 
+    * @param number is the desired amount of unique IP addresses
+    * @return a String array of unique IP addresses. 
+    */
+   public String[] ugen(int number)
+   {
+	   //counter used to stop the loop
+	   int counter = 1;
+	   //ipArray will store IP addresses  
+	   ArrayList<String> ipArray = new ArrayList<String>();
+	   
+	   HashSet<String> uip = new HashSet<String>();
+
+	   //loop used to obtain specified number of IP addresses 
+	   while(counter <= number)
+	   {
+		   String ip = ipGenerator();
+		   //ipGenerator() method used to generate IP addresses 
+		   if(uip.isEmpty())
+		   {
+		      uip.add(ip);
+		      ipArray.add(ip);
+		   }
+		   else if ( uip.contains(ip) )
+		   {
+		      continue;
+		   }
+		   else
+		   {
+			   uip.add(ip);
+		       ipArray.add(ip);
+		   }
+		   counter++;
+	   }
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+	    int counter = 1;
+      
+      while(counter <= 4)
+      {
+         for(int i = 0; i < ip.length(); i++)
+         {
+            Character temp = ip.charAt(i);
+            if(temp.compareTo('.') == 0)
+               counter++;
+            
+            switch (counter)
+            {
+               case 1: one += temp.toString();
+               break;
+               case 2: two += temp.toString();
+               break;
+               case 3: three += temp.toString();
+               break; 
+               case 4: four += temp.toString();
+            }
+               
+          
+               
+         }
+         
+	   
+	   String[] stringArray = new String[ipArray.size()]; 
+	   System.out.println("size is " + ipArray.size());
+	   return ipArray.toArray(stringArray);
+   }
+   

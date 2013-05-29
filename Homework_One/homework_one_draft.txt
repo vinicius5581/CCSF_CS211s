@@ -1,0 +1,83 @@
+/** 
+ * 
+ * @author Victor Malchikov
+ *
+ */
+import java.io.*;
+import java.util.*;
+
+public class MyMethod 
+{
+   /** This method takes in a file and stores its lines in an array.
+    * 	
+    * @param fileName is the name of the file.
+    * @param numbLines is a parameter that gives the user capability
+    *        of providing number of lines they wish to store from the
+    *        file they provide. If no parameter is provided the default
+    *        is to store the whole file.
+    * @return an array of strings where each element stores a line from 
+    *         the file.
+    */
+   public static String[] loadFile(String fileName, int ... numbLines)
+   {
+	  // stores number of lines user wants from the file
+	  // default is 0 which means store all lines in the file
+	  int lines = 0;  
+	  boolean limitReached = false;
+      
+      //get number of lines from the array
+
+	  for( int number : numbLines)
+	  {
+		lines = number;  
+	  }
+	  
+	  //Array where we will store the lines.
+	  ArrayList<String> fileLines = new ArrayList<String>(); 
+	  
+	  while (sc.hasNext() && !limitReached)
+	  {
+		  fileLInes.add(sc.nextLine())
+		  line--;
+		  if(line == 0)
+			  limitReached = true;
+	  }
+
+	  
+	  //Get the file and store its lines
+	  try
+      {
+		 Scanner sc = new Scanner(new File(fileName));
+         int index = 0; //used to restrict number of lines stored
+         if(lines == 0)
+            while (sc.hasNext()) //store all lines in a file
+            {
+               fileLines.add(sc.nextLine());
+            }
+         else
+            while (sc.hasNext() && index < lines) //store specified number of lines
+            {
+               fileLines.add(sc.nextLine());
+               index++;
+            }
+      }
+	  catch(FileNotFoundException e)
+	  {
+	     System.err.println("Bad file name or file does not exist");
+	     System.exit(1);
+	  }
+	  catch(IOException e)
+	  {
+	     System.err.println("Cannot access file.");
+	     System.exit(2);
+	  }
+	  
+	  //convert ArrayList to String Array and return it
+	  String[] arrayOfLines = new String[fileLines.size()];
+	  fileLines.toArray(arrayOfLines);
+	  
+	  return arrayOfLines;
+	  
+   }
+  
+}
